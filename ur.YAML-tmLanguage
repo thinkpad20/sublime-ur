@@ -1,0 +1,187 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: Ur
+scopeName: source.ur
+fileTypes: [urp, ur]
+uuid: c613098c-23de-4cdc-8e7e-0cdab93f2185
+
+patterns:
+- include: '#comments'
+- comment: Basic keywords
+  match: \b(case|class|con|constraint|constraints|datatype|end|fn|in|include|let|map|of|open|rec|sig|signature|struct|structure|type|val|where)\b
+  name: keyword.other.ur
+
+- comment: Keywords related to web stuff
+  match: \b(table|cookie|view|style|task|sequence)\b
+  name: keyword.web.ur
+
+- begin: \b(let)\b
+  captures:
+    '1':
+      name: keyword.other.ur
+    '2':
+      name: keyword.other.ur
+  end: \b(end)\b
+  name: meta.exp.let.ur
+  patterns:
+  - include: $self
+
+- begin: \b(sig)\b
+  captures:
+    '1':
+      name: keyword.other.delimiter.ur
+    '2':
+      name: keyword.other.delimiter.ur
+  end: \b(end)\b
+  name: meta.module.sigdec.ur
+  patterns:
+  - include: '#spec'
+
+- match: \b(if|then|else)\b
+  name: keyword.control.ur
+
+- name: meta.definition.fun.ur
+  begin: \b(fun|and)\s+([\w]+)\b
+  captures:
+    '1':
+      name: keyword.control.fun.ur
+    '2':
+      name: entity.name.function.ur
+  end: (?=val|type|datatype|structure)
+  patterns:
+  - include: source.ur
+
+- name: string.quoted.double.ur
+  begin: '"'
+  beginCaptures:
+    '0':
+      name: punctuation.definition.string.begin.ur
+  end: '"'
+  endCaptures:
+    '0':
+      name: punctuation.definition.string.end.ur
+  patterns:
+  - match: \\.
+    name: constant.character.escape.ur
+
+- name: constant.character.ur
+  captures:
+    '1':
+      name: punctuation.definition.constant.ur
+    '3':
+      name: punctuation.definition.constant.ur
+  match: (#")(\\)?.(")
+
+- name: constant.numeric.ur
+  match: \b\d*\.?\d+\b
+
+- name: meta.module.dec.ur
+  begin: "(?x)\\b\n\t\t\t\t\t(functor|structure|signature)\\s+\n\t\t\t\t\t(\\w+)\\\
+    s* # identifier"
+  captures:
+    '1':
+      name: storage.type.module.binder.ur
+    '2':
+      name: entity.name.type.module.ur
+  end: (?==|:|\()
+
+- name: keyword.other.module.ur
+  match: \b(open)\b
+
+- comment: Some constants and builtins provided by
+  name: constant.language.ur
+  match: \b(Nil|Cons|True|False|None|Some|Type|Name)\b
+
+- name: meta.typeabbrev.ur
+  begin: \s*(type) .* =
+  captures:
+    '1':
+      name: keyword.other.typeabbrev.ur
+    '2':
+      name: variable.other.typename.ur
+  end: $
+  patterns:
+  - match: (([a-zA-Z0-9\.\* ]|(\->))*)
+    name: meta.typeexp.ur
+
+- comment: Binary operators
+  match: '[|!%$?~+:\-.*=</>\\]+'
+  name: keyword.operator.ur
+
+
+repository:
+  comments:
+    patterns:
+    - begin: \(\*
+      beginCaptures:
+        '0':
+          name: punctuation.definition.comment.begin.ur
+      end: \*\)
+      endCaptures:
+        '0':
+          name: punctuation.definition.comment.end.ur
+      name: comment.block.ur
+      patterns:
+      - include: '#comments'
+  spec:
+    patterns:
+    - captures:
+        '1':
+          name: keyword.other.ur
+        '2':
+          name: entity.name.type.abbrev.ur
+      match: \b(exception|type)\s+([a-zA-Z][a-zA-Z0-9'_]*)
+      name: meta.spec.ur.type
+    - begin: \b(datatype)\s+([a-zA-Z][a-zA-Z0-9'_]*)\s*(?==)
+      captures:
+        '1':
+          name: keyword.other.ur
+        '2':
+          name: entity.name.type.datatype.ur
+      end: (?=val|type|eqtype|datatype|structure|include|exception)
+      name: meta.spec.ur.datatype
+      patterns:
+      - captures:
+          '1':
+            name: keyword.other.ur
+          '2':
+            name: entity.name.type.datatype.ur
+        match: \b(and)\s+([a-zA-Z][a-zA-Z0-9'_]*)\s*(?==)
+        name: meta.spec.ur.datatype
+      - captures:
+          '1':
+            name: variable.other.dcon.ur
+          '2':
+            name: keyword.other.ur
+        match: "(?x)\n\t\t\t\t\t\t\t=\\s*([a-zA-Z][a-zA-Z0-9'_]*)(\\s+of)?"
+        name: meta.datatype.rule.main.ur
+      - captures:
+          '1':
+            name: variable.other.dcon.ur
+          '2':
+            name: keyword.other.ur
+        match: \|\s*([a-zA-Z][a-zA-Z0-9'_]*)(\s+of)?
+        name: meta.datatype.rule.other.ur
+    - captures:
+        '1':
+          name: keyword.other.ur
+      match: '\b(val)\s*([^:]+)\s*:'
+      name: meta.spec.ur.val
+    - begin: '\b(structure)\s*(\w+)\s*:'
+      captures:
+        '1':
+          name: keyword.other.ur
+        '2':
+          name: entity.name.type.module.ur
+      end: (?=val|type|eqtype|datatype|structure|include)
+      name: meta.spec.ur.structure
+      patterns:
+      - match: \b(sharing)\b
+        name: keyword.other.ur
+    - captures:
+        '1':
+          name: keyword.other.ur
+      match: \b(include)\b
+      name: meta.spec.ur.include
+    - include: '#comments'
+...
