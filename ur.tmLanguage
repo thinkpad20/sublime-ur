@@ -19,9 +19,17 @@
 			<key>comment</key>
 			<string>Basic keywords</string>
 			<key>match</key>
-			<string>\b(case|class|con|constraint|constraints|datatype|end|fn|in|include|let|map|of|open|rec|sig|signature|struct|structure|type|val|where)\b</string>
+			<string>\b(class|con|constraint|constraints|datatype|end|fn|in|let|map|open|rec|sig|signature|struct|structure|type|val|where)\b</string>
 			<key>name</key>
 			<string>keyword.other.ur</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Control flow keywords</string>
+			<key>match</key>
+			<string>\b(if|then|else|case|of)\b</string>
+			<key>name</key>
+			<string>keyword.control.ur</string>
 		</dict>
 		<dict>
 			<key>comment</key>
@@ -30,6 +38,14 @@
 			<string>\b(table|cookie|view|style|task|sequence)\b</string>
 			<key>name</key>
 			<string>keyword.web.ur</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Importing other modules/signatures</string>
+			<key>match</key>
+			<string>\b(open|include)\b</string>
+			<key>name</key>
+			<string>keyword.other.module.ur</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -88,12 +104,6 @@
 			</array>
 		</dict>
 		<dict>
-			<key>match</key>
-			<string>\b(if|then|else)\b</string>
-			<key>name</key>
-			<string>keyword.control.ur</string>
-		</dict>
-		<dict>
 			<key>begin</key>
 			<string>\b(fun|and)\s+([\w]+)\b</string>
 			<key>captures</key>
@@ -132,6 +142,8 @@
 					<string>punctuation.definition.string.begin.ur</string>
 				</dict>
 			</dict>
+			<key>comment</key>
+			<string>String literals</string>
 			<key>end</key>
 			<string>"</string>
 			<key>endCaptures</key>
@@ -155,27 +167,45 @@
 			</array>
 		</dict>
 		<dict>
-			<key>captures</key>
+			<key>begin</key>
+			<string>[^a-zA-Z0-9]'</string>
+			<key>beginCaptures</key>
 			<dict>
-				<key>1</key>
+				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.definition.constant.ur</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.constant.ur</string>
+					<string>punctuation.definition.string.begin.ur</string>
 				</dict>
 			</dict>
-			<key>match</key>
-			<string>(#")(\\)?.(")</string>
+			<key>comment</key>
+			<string>Character literals</string>
+			<key>end</key>
+			<string>'</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.string.end.ur</string>
+				</dict>
+			</dict>
 			<key>name</key>
 			<string>constant.character.ur</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>\\.</string>
+					<key>name</key>
+					<string>constant.character.escape.ur</string>
+				</dict>
+			</array>
 		</dict>
 		<dict>
+			<key>comment</key>
+			<string>Numberic literals</string>
 			<key>match</key>
-			<string>\b\d*\.?\d+\b</string>
+			<string>\b(\d+\.?\d+)\b</string>
 			<key>name</key>
 			<string>constant.numeric.ur</string>
 		</dict>
@@ -201,12 +231,6 @@
 			<string>(?==|:|\()</string>
 			<key>name</key>
 			<string>meta.module.dec.ur</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\b(open)\b</string>
-			<key>name</key>
-			<string>keyword.other.module.ur</string>
 		</dict>
 		<dict>
 			<key>comment</key>

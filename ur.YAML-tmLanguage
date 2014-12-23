@@ -8,21 +8,29 @@ uuid: c613098c-23de-4cdc-8e7e-0cdab93f2185
 patterns:
 - include: '#comments'
 - comment: Basic keywords
-  match: \b(case|class|con|constraint|constraints|datatype|end|fn|in|include|let|map|of|open|rec|sig|signature|struct|structure|type|val|where)\b
+  match: \b(class|con|constraint|constraints|datatype|end|fn|in|let|map|open|rec|sig|signature|struct|structure|type|val|where)\b
   name: keyword.other.ur
+
+- comment: Control flow keywords
+  name: keyword.control.ur
+  match: \b(if|then|else|case|of)\b
 
 - comment: Keywords related to web stuff
   match: \b(table|cookie|view|style|task|sequence)\b
   name: keyword.web.ur
 
-- begin: \b(let)\b
+- comment: Importing other modules/signatures
+  name: keyword.other.module.ur
+  match: \b(open|include)\b
+
+- name: meta.exp.let.ur
+  begin: \b(let)\b
   captures:
     '1':
       name: keyword.other.ur
     '2':
       name: keyword.other.ur
   end: \b(end)\b
-  name: meta.exp.let.ur
   patterns:
   - include: $self
 
@@ -37,9 +45,6 @@ patterns:
   patterns:
   - include: '#spec'
 
-- match: \b(if|then|else)\b
-  name: keyword.control.ur
-
 - name: meta.definition.fun.ur
   begin: \b(fun|and)\s+([\w]+)\b
   captures:
@@ -51,7 +56,8 @@ patterns:
   patterns:
   - include: source.ur
 
-- name: string.quoted.double.ur
+- comment: String literals
+  name: string.quoted.double.ur
   begin: '"'
   beginCaptures:
     '0':
@@ -64,16 +70,23 @@ patterns:
   - match: \\.
     name: constant.character.escape.ur
 
-- name: constant.character.ur
-  captures:
-    '1':
-      name: punctuation.definition.constant.ur
-    '3':
-      name: punctuation.definition.constant.ur
-  match: (#")(\\)?.(")
+- comment: Character literals
+  name: constant.character.ur
+  begin: "[^a-zA-Z0-9]'"
+  beginCaptures:
+    '0':
+      name: punctuation.definition.string.begin.ur
+  end: "'"
+  endCaptures:
+    '0':
+      name: punctuation.definition.string.end.ur
+  patterns:
+  - match: \\.
+    name: constant.character.escape.ur
 
-- name: constant.numeric.ur
-  match: \b\d*\.?\d+\b
+- comment: Numberic literals
+  name: constant.numeric.ur
+  match: \b(\d+\.?\d+)\b
 
 - name: meta.module.dec.ur
   begin: "(?x)\\b\n\t\t\t\t\t(functor|structure|signature)\\s+\n\t\t\t\t\t(\\w+)\\\
@@ -84,9 +97,6 @@ patterns:
     '2':
       name: entity.name.type.module.ur
   end: (?==|:|\()
-
-- name: keyword.other.module.ur
-  match: \b(open)\b
 
 - comment: Some constants and builtins provided by
   name: constant.language.ur
